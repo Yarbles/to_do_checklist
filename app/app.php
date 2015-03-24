@@ -24,6 +24,8 @@
     //get
     //READ (all) tasks
     $app->get("/tasks", function() use ($app) {
+
+
         return $app['twig']->render('tasks.html.twig', array('tasks' => Task::getAll()));
     });
 
@@ -35,7 +37,11 @@
     //READ (singular) task
     $app->get("/tasks/{id}", function($id) use ($app) {
         $task = Task::find($id);
-        return $app['twig']->render('task.html.twig', array('task' => $task, 'id'=> $task->getId(), 'categories' => $task->getCategories(), 'all_categories' => Category::getAll()));
+        $query = $GLOBALS['DB']->query("SELECT completion FROM tasks WHERE id = $id ;");
+        $temp = $query->fetchAll(PDO::FETCH_ASSOC);
+        $completion =$temp[0]['completion'];
+        
+        return $app['twig']->render('task.html.twig', array('task' => $task, 'id'=> $task->getId(), 'completion'=>$completion, 'categories' => $task->getCategories(), 'all_categories' => Category::getAll()));
     });
 
     //READ (singular) category
@@ -51,7 +57,7 @@
     //the edit forms should submit to tasks/{id} and categories/{id} with a patch method.
     $app->get("/tasks/{id}/edit", function($id) use ($app) {
         $task = Task::find($id);
-        return $app['twig']->render('task_edit.html.twig', array('task' => $task));
+        return $app['twig']->render('task_edit.html.twig', array('task' => $task , 'completion'=>$completion, 'id'=>$task->getId()));
     });
 
     $app->get("/categories/{id}/edit", function($id) use ($app) {
@@ -147,8 +153,10 @@
          $task = Task::find($id);
 
         if ($completion) {
-                $completion_query = $GLOBALS['DB']->query("UPDATE tasks SET completed = true WHERE id = $id;");
+                $completion_query = $GLOBALS['DB']->query("UPDATE tasks SET completion = true WHERE id = $id;");
         }
+
+        // $completion = $GLOBALS['DB']->query("SELECT completion FROM tasks WHERE id = $id ;");
         return $app['twig']->render('task.html.twig', array('task' => $task, 'id'=>$task->getId(), 'categories' => $task->getCategories(), 'all_categories' => Category::getAll()));
     });
 
