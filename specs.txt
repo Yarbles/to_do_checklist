@@ -1,0 +1,22 @@
+GOAL:
+
+Create a To Do List app. 
+
+As a user, I want to create a task and be able to save a list of tasks, each one holding a text description.  
+As a user, I want to create categories to organize my tasks with a keyword or set of keywords being the name of the category. For example, the task "sweep the floor" could belong to the categories "work chores" and "kitchen chores".
+As a user, I want to be able to assign a task to multiple categories. 
+As a user, I want to be able to assign multiple categories to a single task. 
+As a user, I would like to view all tasks associated with a single category, and all categories associated with a single task. 
+As a user, I would like to edit existing tasks and categories once they have been created and stored.
+As a user, I would like to be able to delete existing tasks and categories, one at a time or all at once. 
+As a user, I would like to have a page to view all tasks and a page to view all categories. 
+
+
+IMPLEMENTATION NOTES:
+
+Create classes with full CRUD functionality for Task and Category.
+Task should have a 'description' property. (string)
+Category should have a 'name' property. (string)
+They should each be stored in tables named 'tasks' and 'categories' in a database 'to_do' with a test database 'to_do_test'.
+A Category has many tasks. A Task has many Categories. This will be a many-to-many relationship.
+There will also be a join table called categories_tasks holding columns 'task_id' and 'category_id' (both int)
