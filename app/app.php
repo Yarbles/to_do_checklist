@@ -40,7 +40,7 @@
         $query = $GLOBALS['DB']->query("SELECT completion FROM tasks WHERE id = $id ;");
         $temp = $query->fetchAll(PDO::FETCH_ASSOC);
         $completion =$temp[0]['completion'];
-        
+
         return $app['twig']->render('task.html.twig', array('task' => $task, 'id'=> $task->getId(), 'completion'=>$completion, 'categories' => $task->getCategories(), 'all_categories' => Category::getAll()));
     });
 
@@ -57,8 +57,12 @@
     //the edit forms should submit to tasks/{id} and categories/{id} with a patch method.
     $app->get("/tasks/{id}/edit", function($id) use ($app) {
         $task = Task::find($id);
+        $query = $GLOBALS['DB']->query("SELECT completion FROM tasks WHERE id = $id ;");
+        $temp = $query->fetchAll(PDO::FETCH_ASSOC);
+        $completion =$temp[0]['completion'];
         return $app['twig']->render('task_edit.html.twig', array('task' => $task , 'completion'=>$completion, 'id'=>$task->getId()));
     });
+
 
     $app->get("/categories/{id}/edit", function($id) use ($app) {
         $category = Category::find($id);
@@ -144,7 +148,11 @@
         $description = $_POST['description'];
         $task = Task::find($id);
         $task->update($description);
-        return $app['twig']->render('task.html.twig', array('task' => $task, 'categories' => $task->getCategories(), 'id' => $task->getId(), 'all_categories' => Category::getAll()));
+
+        $query = $GLOBALS['DB']->query("SELECT completion FROM tasks WHERE id = $id ;");
+        $temp = $query->fetchAll(PDO::FETCH_ASSOC);
+        $completion =$temp[0]['completion'];
+        return $app['twig']->render('task.html.twig', array('task' => $task, 'completion'=>$completion, 'categories' => $task->getCategories(), 'id' => $task->getId(), 'all_categories' => Category::getAll()));
     });
 
     $app->post("/tasks/{id}", function($id) use ($app) {
@@ -153,11 +161,13 @@
          $task = Task::find($id);
 
         if ($completion) {
-                $completion_query = $GLOBALS['DB']->query("UPDATE tasks SET completion = true WHERE id = $id;");
+                $completion_query = $GLOBALS['DB']->query("UPDATE tasks SET completion = 'completed' WHERE id = $id;");
         }
 
-        // $completion = $GLOBALS['DB']->query("SELECT completion FROM tasks WHERE id = $id ;");
-        return $app['twig']->render('task.html.twig', array('task' => $task, 'id'=>$task->getId(), 'categories' => $task->getCategories(), 'all_categories' => Category::getAll()));
+        $query = $GLOBALS['DB']->query("SELECT completion FROM tasks WHERE id = $id ;");
+        $temp = $query->fetchAll(PDO::FETCH_ASSOC);
+        $completion =$temp[0]['completion'];
+        return $app['twig']->render('task.html.twig', array('task' => $task, 'completion'=>$completion, 'id'=>$task->getId(), 'categories' => $task->getCategories(), 'all_categories' => Category::getAll()));
     });
 
 
